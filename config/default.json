@@ -1,0 +1,16 @@
+{
+  "port": 5000,
+  "connection": {
+    "dialect": "mariadb",
+    "host": "localhost",
+    "user": "root",
+    "database": "JustChatting",
+    "password": "5572505"
+  },
+  "tokenSecret": "helloworld",
+  "cryptoSecret": "worldhello",
+  "images": {
+    "path": "files/images",
+    "ext": [".jpeg", ".jpg", ".png"]
+  }
+}
