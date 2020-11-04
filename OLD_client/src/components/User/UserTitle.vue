@@ -12,24 +12,24 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
-	data() {
-		return {
-			user_id: null,
-		};
-	},
-	computed: {
-		...mapGetters(["getCurrentUser"]),
-	},
-	methods: {
-		...mapActions(["fetchUserById"]),
-	},
-	mounted() {
-		this.user_id = localStorage.getItem("user");
-		this.fetchUserById({
-			token: localStorage.getItem("token"),
-			id: this.user_id,
-		});
-	},
+  data() {
+    return {
+      user_id: null,
+    };
+  },
+  computed: {
+    ...mapGetters(["getCurrentUser"]),
+  },
+  methods: {
+    ...mapActions(["fetchUserById"]),
+  },
+  mounted() {
+    this.user_id = localStorage.getItem("user");
+    this.fetchUserById({
+      token: localStorage.getItem("token"),
+      id: this.user_id,
+    });
+  },
 };
 </script>
 
