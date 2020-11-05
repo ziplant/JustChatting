@@ -1,6 +1,7 @@
 const GroupService = require("../services/group.services"),
   bcrypt = require("bcryptjs"),
-  imageConfig = require("config").get("images");
+  imageConfig = require("config").get("images"),
+  path = require("path");
 
 class GroupController {
   async getGroups(req, res) {
@@ -37,7 +38,7 @@ class GroupController {
     res.status(200).json(
       await GroupService.createGroup(req.body, {
         data: req.file,
-        path: imageConfig.path,
+        path: `${imageConfig.path}/groups`,
         filename: req.body.logo_filename,
         extArr: imageConfig.ext,
       })

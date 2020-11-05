@@ -1,18 +1,32 @@
 <template lang="pug">
-.col.s12.m6.l4
+.col.s12.m6.l4.group-item
   .card
-    .card-image.waves-effect.waves-block.waves-ligh.pink.lighten-2
-      router-link(:to="'/group/' + group.group_id")
-        img.circle(:src="'/images/groups/' + group.logo_filename")
+    router-link(:to="'/group/' + group.group_id")
+     .card-image.waves-effect.waves-block.waves-ligh.grey.darken-3
+        img.circle(
+          v-if="group.logo_filename"
+          :src="'/images/groups/' + group.logo_filename"
+          )
+        img.circle(
+          v-else="group.logo_filename"
+          src="/images/groups/default-logo.png"
+          )
+        span.group-item_caption.flow-text.white-text users: 0
+        span.group-item_caption.flow-text.pink-text.right(
+          v-if="group.password"
+        ) {{access}}
+        span.group-item_caption.flow-text.green-text.right(
+          v-else
+        ) {{access}}
     .card-content
       span.card-title.activator.white-text {{group.title}}
         i.material-icons.right more_vert
       
-    .card-reveal.pink.lighten-2
+    .card-reveal.grey.darken-3
       span.card-title.activator {{group.title}}
         i.material-icons.right close
       p {{group.description}}
-      p {{group.date_created}}
+      p {{formattedDate}}
 </template>
 
 <script>
@@ -20,7 +34,26 @@ export default {
   props: {
     group: Object,
   },
+  setup({ group }) {
+    const formattedDate = new Date(group.date_created).toLocaleDateString();
+    const access = group.password ? "private" : "public";
+
+    return {
+      formattedDate,
+      access,
+    };
+  },
 };
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.group-item
+  img
+    height: 250px
+    width: auto !important
+    max-width: 100%
+    padding: 5px
+    margin: auto
+  &_caption
+    padding: 5px
+</style>

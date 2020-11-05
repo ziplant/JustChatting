@@ -29,6 +29,7 @@ const routes = [
         path: ":groupId(\\d+)",
         name: "ChatGroup",
         component: () => import("../views/Group/RoomGroup.vue"),
+        props: true,
       },
       {
         path: "create",

@@ -21,8 +21,7 @@ module.exports = (sequelize) => {
       },
       portrait_filename: {
         type: DataTypes.STRING(255),
-        allowNull: false,
-        defaultValue: "default-avatar.png",
+        allowNull: true,
       },
     },
     {

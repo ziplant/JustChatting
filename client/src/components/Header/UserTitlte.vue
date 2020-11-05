@@ -5,11 +5,11 @@
 		span.logout.right(@click="logout()") logout
 	.col(v-if="user.portrait_filename")
 		.user-title_avatar.circle(
-			:style="{'background-image': `url(images/users/${user.portrait_filename})`}"
+			:style="{'background-image': `url(/images/users/${user.portrait_filename})`}"
 		)
 	.col(v-else)
 		.user-title_avatar.circle(
-			style="background-image: url('images/users/default-avatar.png')"
+			style="background-image: url('/images/users/default-avatar.png')"
 		)
 </template>
 

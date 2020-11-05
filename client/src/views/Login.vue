@@ -13,13 +13,13 @@
         span.helper-text(data-error=" Password length must be at least 5 characters long")
       button.btn.waves-effect.waves-light.col.s12(type="submit") Sign in
 Teleport(to="#modal")
-  Alert(v-if="alertOpen") {{response.message}}
+  Alert(v-if="alertOpen") {{responseError}}
 </template>
 
 <script>
 import Alert from "@/components/Alert";
 import { useStore } from "vuex";
-import { reactive, onBeforeMount } from "vue";
+import { reactive, ref, onBeforeMount } from "vue";
 import useValidate from "@/compositions/validate";
 import useRedirect from "@/compositions/redirect";
 import useAlert from "@/compositions/alert";
@@ -36,13 +36,13 @@ export default {
       verifiedRedirect("/");
     });
 
-    let response = reactive({});
+    let responseError = ref("");
 
     const submit = async () => {
       if (authValidate(authForm)) {
-        response.message = (await dispatch("login", loginForm)).error;
+        responseError.value = (await dispatch("login", loginForm)).error;
 
-        if (response.message) {
+        if (responseError.value) {
           showAlert();
         } else {
           await dispatch("fetchUser", getters.getAuth);
@@ -56,7 +56,7 @@ export default {
       submit,
       alertOpen,
       showAlert,
-      response,
+      responseError,
     };
   },
   components: {

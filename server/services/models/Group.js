@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
       },
       logo_filename: {
         type: DataTypes.STRING(255),
-        defaultValue: "default-logo.png",
+        allowNull: true,
       },
       date_created: {
         type: DataTypes.DATE,

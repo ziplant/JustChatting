@@ -3,7 +3,7 @@ nav
   .nav-wrapper
     form
       .input-field
-        input#search(type="search" placeholder="Search group" required)
+        input#search(type="search" placeholder="Search group by title" required)
         label.label-icon(for="search")
           i.material-icons search
         i.material-icons close
@@ -16,57 +16,18 @@ router-link.add-link(to="/group/create").btn-floating.btn-large.waves-effect.wav
 
 <script>
 import GroupItem from "./GroupItem";
+import { useStore } from "vuex";
+import { computed, onBeforeMount } from "vue";
 
 export default {
   setup() {
-    const groups = [
-      {
-        group_id: 1,
-        title: "main",
-        description: "this is main group baby",
-        password: false,
-        logo_filename: "default-logo.png",
-        date_created: "02/11/2020",
-        owner_id: 1,
-      },
-      {
-        group_id: 2,
-        title: "second",
-        description: "this is second group baby",
-        password: false,
-        logo_filename: "default-logo.png",
-        date_created: "02/11/2020",
-        owner_id: 1,
-      },
-      {
-        group_id: 3,
-        title: "main3",
-        description:
-          "this is main group baby his is main group baby his is main group babyhis is main group baby",
-        password: false,
-        logo_filename: "default-logo.png",
-        date_created: "02/11/2020",
-        owner_id: 1,
-      },
-      {
-        group_id: 4,
-        title: "4",
-        description: "this is main group baby",
-        password: false,
-        logo_filename: "default-logo.png",
-        date_created: "02/11/2020",
-        owner_id: 1,
-      },
-      {
-        group_id: 5,
-        title: "last",
-        description: "LAST GROUP PLEASE NO MORE",
-        password: false,
-        logo_filename: "default-logo.png",
-        date_created: "02/11/2020",
-        owner_id: 1,
-      },
-    ];
+    const { dispatch, getters } = useStore();
+
+    onBeforeMount(async () => {
+      await dispatch("fetchGroups", getters.getAuth.token);
+    });
+
+    const groups = computed(() => getters.getGroups);
 
     return {
       groups,

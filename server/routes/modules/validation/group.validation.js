@@ -1,11 +1,13 @@
 const Joi = require("@hapi/joi");
 
 module.exports.createValidation = (req, res, next) => {
+  if (!req.body.password) delete req.body.password;
+
   const schema = Joi.object({
     title: Joi.string().required(),
     description: Joi.string().required(),
     date_created: Joi.date().default(Date.now()),
-    password: Joi.string().min(5),
+    password: Joi.string(),
   });
 
   const { error } = schema.validate(req.body);
@@ -17,7 +19,7 @@ module.exports.updateValidation = (req, res, next) => {
   const schema = Joi.object({
     title: Joi.string(),
     description: Joi.string(),
-    password: Joi.string().min(5),
+    password: Joi.string().default(""),
   });
 
   const { error } = schema.validate(req.body);

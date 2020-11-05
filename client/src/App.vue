@@ -8,9 +8,16 @@ import Header from "./components/Header/Header";
 import { onBeforeMount, onRenderTriggered } from "vue";
 import { useStore } from "vuex";
 
+import { useSocket } from "vue-socket.io-next";
+
 export default {
   setup() {
     const { commit, dispatch, getters } = useStore();
+    const socket = useSocket();
+
+    socket.on("connect", () => {
+      console.log("socket connected");
+    });
 
     onBeforeMount(async () => {
       commit("login");
@@ -37,7 +44,7 @@ body
     .card
       background-color: transparent
     .btn
-      background-color: #c2185b
+      background-color: #26a69a
     .divider
       opacity: 0.2
     .sidenav

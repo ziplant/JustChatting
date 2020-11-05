@@ -26,13 +26,13 @@
           input.file-path(type="text" placeholder="Upload your avatar")
       button.btn.waves-effect.waves-light.col.s12(type="submit") Sign up
 Teleport(to="#modal")
-  Alert(v-if="alertOpen") {{response.message}}
+  Alert(v-if="alertOpen") {{responseError}}
 </template>
 
 <script>
 import Alert from "@/components/Alert";
 import { useStore } from "vuex";
-import { reactive, onBeforeMount } from "vue";
+import { ref, onBeforeMount } from "vue";
 import useValidate from "@/compositions/validate";
 import useAlert from "@/compositions/alert";
 import useRedirect from "@/compositions/redirect";
@@ -48,13 +48,13 @@ export default {
       verifiedRedirect("/");
     });
 
-    let response = reactive({});
+    let responseError = ref("");
 
     const submit = async () => {
       if (authValidate(registryForm)) {
-        response.message = (await dispatch("registry", registryForm)).error;
+        responseError.value = (await dispatch("registry", registryForm)).error;
 
-        if (response.message) {
+        if (responseError.value) {
           showAlert();
         } else {
           redirect("/login");
@@ -65,7 +65,7 @@ export default {
     return {
       submit,
       alertOpen,
-      response,
+      responseError,
     };
   },
   components: {
