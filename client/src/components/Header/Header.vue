@@ -4,11 +4,7 @@
     .nav-wrapper
       .brand-logo.left
         router-link(to="/") JustChatting
-      .user-info.row.right(v-if="authorized")
-          .col
-            .flow-text username
-            span.logout.right logout
-          img.circle.col(src="/images/users/default-avatar.png")
+      UserTitle(v-if="authorized")
       ul.right(v-else)
         li
           router-link(to="/login") 
@@ -19,27 +15,26 @@
 </template>
 
 <script>
+import UserTitle from "./UserTitlte";
 import { useStore } from "vuex";
 import { computed } from "vue";
 
 export default {
   setup() {
-    const store = useStore();
-    const authorized = computed(() => store.getters.isAuthorized);
+    const { getters } = useStore();
+    const authorized = computed(() => getters.isAuthorized);
 
     return {
       authorized,
     };
   },
+  components: {
+    UserTitle,
+  },
 };
 </script>
 
 <style lang="sass">
-.user-info
-  line-height: 22px
-  padding-top: 10px
-  img
-    width: 67px
 .logout
   text-decoration: underline
   cursor: pointer

@@ -7,11 +7,17 @@
       enctype="multipart/form-data"
     )
       .input-field
-        input#login(type="text" name="username")
-        label(for="login") Login
+        input#login.validate(type="text" name="username")
+        label(for="login") Username
+        span.helper-text(data-error="Username length must be at least 3 characters long")
       .input-field
-        input#password(type="password" name="password")
+        input#password.validate(type="password" name="password")
         label(for="password") Password
+        span.helper-text(data-error=" Password length must be at least 5 characters long")
+      .input-field
+        input#confirmPassword.validate(type="password")
+        label(for="confirmPassword") Confirm Password
+        span.helper-text(data-error="Passwords don't match")
       .input-field.file-field
         .btn
           span Choose file
@@ -19,23 +25,51 @@
         .file-path-wrapper
           input.file-path(type="text" placeholder="Upload your avatar")
       button.btn.waves-effect.waves-light.col.s12(type="submit") Sign up
+Teleport(to="#modal")
+  Alert(v-if="alertOpen") {{response.message}}
 </template>
 
 <script>
+import Alert from "@/components/Alert";
 import { useStore } from "vuex";
-import {} from "vue";
+import { reactive, onBeforeMount } from "vue";
+import useValidate from "@/compositions/validate";
+import useAlert from "@/compositions/alert";
+import useRedirect from "@/compositions/redirect";
 
 export default {
   setup() {
-    const store = useStore();
+    const { dispatch } = useStore();
+    const { authValidate } = useValidate();
+    const { alertOpen, showAlert } = useAlert();
+    const { verifiedRedirect, redirect } = useRedirect();
+
+    onBeforeMount(() => {
+      verifiedRedirect("/");
+    });
+
+    let response = reactive({});
 
     const submit = async () => {
-      console.log(await store.dispatch("registry", registryForm));
+      if (authValidate(registryForm)) {
+        response.message = (await dispatch("registry", registryForm)).error;
+
+        if (response.message) {
+          showAlert();
+        } else {
+          redirect("/login");
+        }
+      }
     };
 
     return {
       submit,
+      alertOpen,
+      response,
     };
+  },
+  components: {
+    Alert,
   },
 };
 </script>

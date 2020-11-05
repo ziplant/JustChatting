@@ -1,11 +1,25 @@
 <template lang="pug">
 Header
-router-view
+main
+  router-view
 </template>
 <script>
-import Header from "./components/Header/Header.vue";
+import Header from "./components/Header/Header";
+import { onBeforeMount, onRenderTriggered } from "vue";
+import { useStore } from "vuex";
 
 export default {
+  setup() {
+    const { commit, dispatch, getters } = useStore();
+
+    onBeforeMount(async () => {
+      commit("login");
+
+      if (getters.isAuthorized) {
+        await dispatch("fetchUser", getters.getAuth);
+      }
+    });
+  },
   components: { Header },
 };
 </script>

@@ -3,7 +3,7 @@
   "connection": {
     "dialect": "mariadb",
     "host": "localhost",
-    "user": "root",
+    "user": "admin",
     "database": "JustChatting",
     "password": "5572505"
   },

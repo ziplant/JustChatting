@@ -19,7 +19,7 @@ class UserController {
         return res
           .status(200)
           .header("auth-token", token)
-          .json({ user_id: user.user_id, message: token });
+          .json({ user_id: user.user_id, token: token });
       }
     }
 
