@@ -11,6 +11,7 @@ const { Router } = require("express"),
 
 router.get("/", verify, GroupController.getGroups);
 router.get("/:id", verify, GroupController.getGroups);
+router.post("/:id/auth", verify, GroupController.confirmPassword);
 router.post(
   "/",
   verify,
