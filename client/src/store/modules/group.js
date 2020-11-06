@@ -2,6 +2,7 @@ export default {
   state: {
     groups: [],
     currentGroup: {},
+    online: {},
   },
   mutations: {
     updateGroups(state, data) {
@@ -9,6 +10,12 @@ export default {
     },
     updateCurrentGroup(state, data) {
       state.currentGroup = data;
+    },
+    setOnline(state, data = {}) {
+      state.online = data;
+      state.groups.forEach((el) => {
+        el.online = state.online[el.group_id] || 0;
+      });
     },
   },
   actions: {
@@ -35,6 +42,7 @@ export default {
         .then((data) => {
           if (!data.error) {
             commit("updateGroups", data);
+            commit("setOnline", getters.getOnline);
           }
           return data;
         });
@@ -64,6 +72,12 @@ export default {
     },
     getCurrentGroup({ currentGroup }) {
       return currentGroup;
+    },
+    getOnline({ online }) {
+      return online;
+    },
+    getGroupOnline: ({ online }) => (group_id) => {
+      return online[group_id];
     },
   },
 };

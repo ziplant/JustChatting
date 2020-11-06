@@ -1,6 +1,7 @@
 <template lang="pug">
-.alert
-	slot
+Teleport(to="#modal")
+	.alert
+		slot
 </template>
 
 <script>

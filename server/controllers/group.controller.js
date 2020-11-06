@@ -13,22 +13,6 @@ class GroupController {
       res.status(200).json(await GroupService.getGroups());
     }
   }
-  async confirmPassword(req, res) {
-    const group = await GroupService.getGroups({ group_id: req.params.id });
-
-    if (group && req.body.password) {
-      const validPass = await bcrypt.compare(
-        req.body.password,
-        group.getDataValue("password")
-      );
-
-      if (validPass) {
-        return res.status(200).json({ message: "Password confirmed" });
-      }
-    }
-
-    return res.status(400).json({ error: "Incorrect password" });
-  }
 
   async createGroup(req, res) {
     const groupExist = await GroupService.getGroups({ title: req.body.title });

@@ -2,10 +2,10 @@ const MessageService = require("../services/message.services");
 
 class MessageController {
   async getMessages(req, res) {
-    if (req.params.id) {
+    if (req.params.group_id) {
       let messages = await MessageService.getMessages(
         {
-          group_id: req.params.id,
+          group_id: req.params.group_id,
         },
         +req.query._limit
       );

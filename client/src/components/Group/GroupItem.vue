@@ -11,7 +11,7 @@
           v-else="group.logo_filename"
           src="/images/groups/default-logo.png"
           )
-        span.group-item_caption.flow-text.white-text.left users: 0
+        span.group-item_caption.flow-text.white-text.left users: {{group.online}}
         span.group-item_caption.flow-text.pink-text.right(
           v-if="group.password"
         ) {{access}}

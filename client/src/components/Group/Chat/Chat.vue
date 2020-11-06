@@ -1,6 +1,6 @@
 <template lang="pug">
 ul.collection.chat
-  .chat_messages
+  .chat_messages#messagesContainer
     ChatMessage(
       v-for="message in messages"
       :key="message.message_id"
@@ -14,37 +14,26 @@ ul.collection.chat
 
 <script>
 import ChatMessage from "./ChatMessage.vue";
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import { useSocket } from "vue-socket.io-next";
 
 export default {
   props: ["groupId"],
   setup({ groupId }) {
-    const { dispatch, getters } = useStore();
+    const { dispatch, commit, getters } = useStore();
+    const socket = useSocket();
 
-    const messages = [
-      {
-        message_id: 1,
-        username: "user1",
-        message_text: "hello there",
-        date_of_writing: "03/11/2020",
-      },
-      {
-        message_id: 2,
-        username: "user2",
-        message_text: "uo",
-        date_of_writing: "03/11/2020",
-      },
-      {
-        message_id: 3,
-        username: "user1",
-        message_text:
-          "some a large text here... asda d asd ada dad ad   asda da asd asda dasd asdasd adsa dasd ad adsasd a dad adasda a sd adas da sda da dsdasdasdasdasd adasdasda end",
-        date_of_writing: "03/11/2020",
-      },
-    ];
-
+    const messages = computed(() => getters.getMessages);
     const messageText = ref("");
+
+    const scrollDown = () => {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    };
+
+    onMounted(() => {
+      scrollDown();
+    });
 
     const sendMessage = async () => {
       if (!messageText.value) return;
@@ -56,10 +45,20 @@ export default {
         date_of_writing: Date.now(),
       };
 
-      console.log(await dispatch("createMessage", message));
+      await dispatch("createMessage", message);
+      message.User = { username: getters.getCurrentUser.username };
+      socket.emit("sendMessage", message);
 
+      scrollDown();
       messageText.value = "";
     };
+
+    socket.on("pushMessage", (data) => {
+      commit("pushMessage", data);
+      setTimeout(() => {
+        scrollDown();
+      }, 0);
+    });
 
     return {
       messages,

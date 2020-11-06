@@ -11,19 +11,31 @@ export default {
     },
   },
   actions: {
-    async fetchMessages({ commit, getters }, { group, limit = 100 }) {
-      return await fetch(`/api/message/${group}/?_limit=${limit}`, {
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-          "auth-token": getters.isAuthorized.token,
-        },
-      })
+    async fetchMessages(
+      { commit, getters },
+      data = {
+        groupPassword: "",
+        limit: 100,
+      }
+    ) {
+      commit("updateMessages", []);
+
+      return await fetch(
+        `/api/message/${getters.getCurrentGroup.group_id}/?_limit=${data.limit}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+            "auth-token": getters.isAuthorized.token,
+          },
+          body: JSON.stringify({ password: data.groupPassword }),
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           if (!data.error) {
             commit("updateMessages", data);
           }
-
           return data;
         });
     },
@@ -39,14 +51,16 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           if (!data.error) {
-            commit("pushMessage", data);
+            message.User = { username: getters.getCurrentUser.username };
+            commit("pushMessage", message);
           }
+
           return data;
         });
     },
   },
   getters: {
-    getMessages: ({ messages }) => (limit) => {
+    getMessages({ messages }) {
       return messages;
     },
   },

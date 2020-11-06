@@ -1,5 +1,5 @@
 <template lang="pug">
-Progress(v-if="fetching")
+Progress(v-if="!isFetched")
 .container.page-inner
   h3.center Create your account
   .row
@@ -26,8 +26,7 @@ Progress(v-if="fetching")
         .file-path-wrapper
           input.file-path(type="text" placeholder="Upload your avatar")
       button.btn.waves-effect.waves-light.col.s12(type="submit") Sign up
-Teleport(to="#modal")
-  Alert(v-if="alertOpen") {{responseError}}
+Alert(v-if="alertOpen") {{responseError}}
 </template>
 
 <script>
@@ -38,6 +37,7 @@ import { ref, onBeforeMount } from "vue";
 import useValidate from "@/compositions/validate";
 import useAlert from "@/compositions/alert";
 import useRedirect from "@/compositions/redirect";
+import useFetching from "@/compositions/fetching";
 
 export default {
   setup() {
@@ -45,19 +45,15 @@ export default {
     const { authValidate } = useValidate();
     const { alertOpen, showAlert } = useAlert();
     const { verifiedRedirect, redirect } = useRedirect();
+    const { responseError, isFetched, fetchAction } = useFetching();
 
     onBeforeMount(() => {
       verifiedRedirect("/");
     });
 
-    const responseError = ref("");
-    const fetching = ref(false);
-
     const submit = async () => {
       if (authValidate(registryForm)) {
-        fetching.value = true;
-        responseError.value = (await dispatch("registry", registryForm)).error;
-        fetching.value = false;
+        await fetchAction("registry", registryForm);
 
         if (responseError.value) {
           showAlert();
@@ -71,7 +67,7 @@ export default {
       submit,
       alertOpen,
       responseError,
-      fetching,
+      isFetched,
     };
   },
   components: {

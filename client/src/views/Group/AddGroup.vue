@@ -1,5 +1,5 @@
 <template lang="pug">
-Progress(v-if="fetching")
+Progress(v-if="!isFetched")
 .container.page-inner
   h3.center Create group
   .row
@@ -27,8 +27,7 @@ Progress(v-if="fetching")
         .file-path-wrapper
           input.file-path(type="text" placeholder="Upload group logo")
       button.btn.waves-effect.waves-light.col.s12(type="submit") Create
-Teleport(to="#modal")
-  Alert(v-if="alertOpen") {{responseError}}
+Alert(v-if="alertOpen") {{responseError}}
 </template>
 
 <script>
@@ -39,6 +38,7 @@ import { ref } from "vue";
 import useValidate from "@/compositions/validate";
 import useRedirect from "@/compositions/redirect";
 import useAlert from "@/compositions/alert";
+import useFetching from "@/compositions/fetching";
 
 export default {
   setup() {
@@ -46,15 +46,11 @@ export default {
     const { groupValidate } = useValidate();
     const { alertOpen, showAlert } = useAlert();
     const { verifiedRedirect } = useRedirect();
-
-    let responseError = ref("");
-    let fetching = ref(false);
+    const { responseError, isFetched, fetchAction } = useFetching();
 
     const submit = async () => {
       if (groupValidate(groupForm)) {
-        fetching.value = true;
-        responseError.value = (await dispatch("createGroup", groupForm)).error;
-        fetching.value = false;
+        await fetchAction("createGroup", groupForm);
 
         if (responseError.value) {
           showAlert();
@@ -67,9 +63,9 @@ export default {
 
     return {
       alertOpen,
-      responseError,
       submit,
-      fetching,
+      responseError,
+      isFetched,
     };
   },
   components: {

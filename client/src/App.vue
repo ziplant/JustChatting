@@ -15,8 +15,8 @@ export default {
     const { commit, dispatch, getters } = useStore();
     const socket = useSocket();
 
-    socket.on("connect", () => {
-      console.log("socket connected");
+    socket.on("groupOnline", (data) => {
+      commit("setOnline", data);
     });
 
     onBeforeMount(async () => {

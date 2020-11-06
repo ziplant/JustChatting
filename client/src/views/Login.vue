@@ -1,5 +1,5 @@
 <template lang="pug">
-Progress(v-if="fetching")
+Progress(v-if="!isFetched")
 .container.page-inner
   h3.center Sign in for chatting
   .row
@@ -13,8 +13,7 @@ Progress(v-if="fetching")
         label(for="password") Password
         span.helper-text(data-error=" Password length must be at least 5 characters long")
       button.btn.waves-effect.waves-light.col.s12(type="submit") Sign in
-Teleport(to="#modal")
-  Alert(v-if="alertOpen") {{responseError}}
+Alert(v-if="alertOpen") {{responseError}}
 </template>
 
 <script>
@@ -25,6 +24,7 @@ import { reactive, ref, onBeforeMount } from "vue";
 import useValidate from "@/compositions/validate";
 import useRedirect from "@/compositions/redirect";
 import useAlert from "@/compositions/alert";
+import useFetching from "@/compositions/fetching";
 
 export default {
   setup() {
@@ -32,20 +32,16 @@ export default {
     const { authValidate } = useValidate();
     const { alertOpen, showAlert } = useAlert();
     const { verifiedRedirect } = useRedirect();
+    const { responseError, isFetched, fetchAction } = useFetching();
     const loginForm = reactive({});
 
     onBeforeMount(() => {
       verifiedRedirect("/");
     });
 
-    const responseError = ref("");
-    const fetching = ref(false);
-
     const submit = async () => {
       if (authValidate(authForm)) {
-        fetching.value = true;
-        responseError.value = (await dispatch("login", loginForm)).error;
-        fetching.value = false;
+        await fetchAction("login", loginForm);
 
         if (responseError.value) {
           showAlert();
@@ -62,7 +58,7 @@ export default {
       alertOpen,
       showAlert,
       responseError,
-      fetching,
+      isFetched,
     };
   },
   components: {
