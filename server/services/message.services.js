@@ -14,7 +14,7 @@ class MessageService {
         return res(
           Message.findAll({
             where: condition,
-            order: [["message_id", "DESC"]],
+            order: [["message_id", "ASC"]],
             limit: limit || null,
             include: {
               model: User,

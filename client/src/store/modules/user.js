@@ -48,11 +48,11 @@ export default {
         .then((res) => res.json())
         .then((data) => data);
     },
-    async fetchUser({ commit }, { user_id, token }) {
-      return await fetch(`/api/user/${user_id}`, {
+    async fetchUser({ commit, getters }) {
+      return await fetch(`/api/user/${getters.isAuthorized.user_id}`, {
         method: "GET",
         headers: {
-          "auth-token": token,
+          "auth-token": getters.isAuthorized.token,
           "Content-Type": "applciation/json;charset=utf-8",
         },
       })
@@ -71,9 +71,6 @@ export default {
     },
     getCurrentUser({ user }) {
       return user;
-    },
-    getAuth({ auth }) {
-      return auth;
     },
   },
 };

@@ -12,22 +12,22 @@ export default {
     },
   },
   actions: {
-    async createGroup({ commit }, { form, token }) {
+    async createGroup({ getters }, form) {
       return await fetch("/api/group", {
         method: "POST",
         headers: {
-          "auth-token": token,
+          "auth-token": getters.isAuthorized.token,
         },
         body: new FormData(form),
       })
         .then((res) => res.json())
         .then((data) => data);
     },
-    async fetchGroups({ commit }, token) {
+    async fetchGroups({ commit, getters }) {
       return await fetch("/api/group", {
         method: "GET",
         headers: {
-          "auth-token": token,
+          "auth-token": getters.isAuthorized.token,
           "Content-Type": "applciation/json;charset=utf-8",
         },
       })
@@ -39,11 +39,11 @@ export default {
           return data;
         });
     },
-    async fetchGroupById({ commit }, { id, token }) {
-      return await fetch(`/api/group/${id}`, {
+    async fetchGroupById({ commit, getters }, groupId) {
+      return await fetch(`/api/group/${groupId}`, {
         method: "GET",
         headers: {
-          "auth-token": token,
+          "auth-token": getters.isAuthorized.token,
           "Content-Type": "applciation/json;charset=utf-8",
         },
       })
@@ -57,8 +57,10 @@ export default {
     },
   },
   getters: {
-    getGroups({ groups }) {
-      return groups;
+    getGroups: ({ groups }) => (search) => {
+      return groups.filter((el) =>
+        el.title.toLowerCase().includes(search.value.toLowerCase())
+      );
     },
     getCurrentGroup({ currentGroup }) {
       return currentGroup;

@@ -3,7 +3,7 @@
   .row
     h5.col.flow-text {{group.title}}
     h5.col.flow-text.right online: 0
-  Chat
+  Chat(:groupId="groupId")
 </template>
 
 <script>
@@ -17,10 +17,7 @@ export default {
     const { getters, dispatch } = useStore();
 
     onBeforeMount(async () => {
-      await dispatch("fetchGroupById", {
-        id: groupId,
-        token: getters.getAuth.token,
-      });
+      await dispatch("fetchGroupById", groupId);
     });
 
     const group = computed(() => {

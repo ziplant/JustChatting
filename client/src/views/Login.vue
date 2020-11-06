@@ -1,5 +1,6 @@
 <template lang="pug">
-.container
+Progress(v-if="fetching")
+.container.page-inner
   h3.center Sign in for chatting
   .row
     form#authForm.col.l6.push-l3.m8.push-m2.s12(@submit.prevent="submit()")
@@ -17,6 +18,7 @@ Teleport(to="#modal")
 </template>
 
 <script>
+import Progress from "@/components/Progress";
 import Alert from "@/components/Alert";
 import { useStore } from "vuex";
 import { reactive, ref, onBeforeMount } from "vue";
@@ -26,7 +28,7 @@ import useAlert from "@/compositions/alert";
 
 export default {
   setup() {
-    const { dispatch, getters } = useStore();
+    const { dispatch } = useStore();
     const { authValidate } = useValidate();
     const { alertOpen, showAlert } = useAlert();
     const { verifiedRedirect } = useRedirect();
@@ -36,16 +38,19 @@ export default {
       verifiedRedirect("/");
     });
 
-    let responseError = ref("");
+    const responseError = ref("");
+    const fetching = ref(false);
 
     const submit = async () => {
       if (authValidate(authForm)) {
+        fetching.value = true;
         responseError.value = (await dispatch("login", loginForm)).error;
+        fetching.value = false;
 
         if (responseError.value) {
           showAlert();
         } else {
-          await dispatch("fetchUser", getters.getAuth);
+          await dispatch("fetchUser");
           verifiedRedirect("/");
         }
       }
@@ -57,9 +62,11 @@ export default {
       alertOpen,
       showAlert,
       responseError,
+      fetching,
     };
   },
   components: {
+    Progress,
     Alert,
   },
 };

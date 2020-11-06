@@ -3,15 +3,15 @@
   .card
     router-link(:to="'/group/' + group.group_id")
      .card-image.waves-effect.waves-block.waves-ligh.grey.darken-3
-        img.circle(
+        .group-item_logo(
           v-if="group.logo_filename"
-          :src="'/images/groups/' + group.logo_filename"
+          :style="{'background-image': `url(/images/groups/${group.logo_filename})`}"
           )
-        img.circle(
+        img.group-item_logo(
           v-else="group.logo_filename"
           src="/images/groups/default-logo.png"
           )
-        span.group-item_caption.flow-text.white-text users: 0
+        span.group-item_caption.flow-text.white-text.left users: 0
         span.group-item_caption.flow-text.pink-text.right(
           v-if="group.password"
         ) {{access}}
@@ -48,12 +48,15 @@ export default {
 
 <style lang="sass">
 .group-item
-  img
-    height: 250px
-    width: auto !important
-    max-width: 100%
+  .card-image
     padding: 5px
+  &_logo
+    height: 190px
+    width: auto !important
     margin: auto
+    background-size: cover
+    background-position: 50% 50%
+    background-repeat: no-repeat
   &_caption
     padding: 5px
 </style>

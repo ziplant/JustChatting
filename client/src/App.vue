@@ -23,7 +23,7 @@ export default {
       commit("login");
 
       if (getters.isAuthorized) {
-        await dispatch("fetchUser", getters.getAuth);
+        await dispatch("fetchUser");
       }
     });
   },
@@ -31,8 +31,11 @@ export default {
 };
 </script>
 <style lang="sass">
+main
+  position: relative
 body
   background-color: #eee
+  .container
   &.dark
     background-color: #343434
     color: #fff
@@ -64,4 +67,7 @@ body
       .collection-item
         background-color: rgba(255,255,255,0.1)
         border-bottom: 1px solid rgba(255,255,255,0.2)
+
+.page-inner
+  padding-top: 10px
 </style>

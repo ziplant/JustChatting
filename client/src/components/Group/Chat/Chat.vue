@@ -6,17 +6,22 @@ ul.collection.chat
       :key="message.message_id"
       :message="message"
     )
-  form.chat_form
-    input(type="text" placeholder="Your message")
+  form.chat_form(@submit.prevent="sendMessage()")
+    input(type="text" v-model="messageText" placeholder="Your message")
     button.btn.waves-effect.waves-light(type="submit") send
       i.material-icons.right send
 </template>
 
 <script>
 import ChatMessage from "./ChatMessage.vue";
+import { ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
-  setup() {
+  props: ["groupId"],
+  setup({ groupId }) {
+    const { dispatch, getters } = useStore();
+
     const messages = [
       {
         message_id: 1,
@@ -39,8 +44,27 @@ export default {
       },
     ];
 
+    const messageText = ref("");
+
+    const sendMessage = async () => {
+      if (!messageText.value) return;
+
+      let message = {
+        user_id: getters.isAuthorized.user_id,
+        group_id: groupId,
+        message_text: messageText.value,
+        date_of_writing: Date.now(),
+      };
+
+      console.log(await dispatch("createMessage", message));
+
+      messageText.value = "";
+    };
+
     return {
       messages,
+      messageText,
+      sendMessage,
     };
   },
   components: {

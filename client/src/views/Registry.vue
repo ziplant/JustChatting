@@ -1,5 +1,6 @@
 <template lang="pug">
-.container
+Progress(v-if="fetching")
+.container.page-inner
   h3.center Create your account
   .row
     form#registryForm.col.l6.push-l3.m8.push-m2.s12(
@@ -30,6 +31,7 @@ Teleport(to="#modal")
 </template>
 
 <script>
+import Progress from "@/components/Progress";
 import Alert from "@/components/Alert";
 import { useStore } from "vuex";
 import { ref, onBeforeMount } from "vue";
@@ -48,11 +50,14 @@ export default {
       verifiedRedirect("/");
     });
 
-    let responseError = ref("");
+    const responseError = ref("");
+    const fetching = ref(false);
 
     const submit = async () => {
       if (authValidate(registryForm)) {
+        fetching.value = true;
         responseError.value = (await dispatch("registry", registryForm)).error;
+        fetching.value = false;
 
         if (responseError.value) {
           showAlert();
@@ -66,9 +71,11 @@ export default {
       submit,
       alertOpen,
       responseError,
+      fetching,
     };
   },
   components: {
+    Progress,
     Alert,
   },
 };

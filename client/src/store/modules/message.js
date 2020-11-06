@@ -6,47 +6,47 @@ export default {
     updateMessages(state, data) {
       state.messages = data;
     },
-    SOCKET_pushMessage(state, data) {
-      state.messages.unshift(data);
+    pushMessage(state, data) {
+      state.messages.push(data);
     },
   },
   actions: {
-    async fetchMessages({ commit }, { group, token, limit = 100 }) {
+    async fetchMessages({ commit, getters }, { group, limit = 100 }) {
       return await fetch(`/api/message/${group}/?_limit=${limit}`, {
         headers: {
           "Content-Type": "application/json;charset=utf-8",
-          "auth-token": token,
+          "auth-token": getters.isAuthorized.token,
         },
       })
         .then((res) => res.json())
         .then((data) => {
-          if (!data.error) commit("updateMessages", data);
-          return data.error;
+          if (!data.error) {
+            commit("updateMessages", data);
+          }
+
+          return data;
         });
     },
-    async createMessage({ dispatch }, { message, token }) {
+    async createMessage({ commit, getters }, message) {
       return await fetch("/api/message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json;charset=utf-8",
-          "auth-token": token,
+          "auth-token": getters.isAuthorized.token,
         },
         body: JSON.stringify(message),
       })
         .then((res) => res.json())
         .then((data) => {
           if (!data.error) {
-            dispatch("fetchMessages", {
-              group: message.group_id,
-              token: token,
-            });
+            commit("pushMessage", data);
           }
           return data;
         });
     },
   },
   getters: {
-    getMessages({ messages }, limit) {
+    getMessages: ({ messages }) => (limit) => {
       return messages;
     },
   },

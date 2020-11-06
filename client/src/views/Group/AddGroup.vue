@@ -1,5 +1,6 @@
 <template lang="pug">
-.container
+Progress(v-if="fetching")
+.container.page-inner
   h3.center Create group
   .row
     form#groupForm.col.l6.push-l3.m8.push-m2.s12(
@@ -31,6 +32,7 @@ Teleport(to="#modal")
 </template>
 
 <script>
+import Progress from "@/components/Progress";
 import Alert from "@/components/Alert";
 import { useStore } from "vuex";
 import { ref } from "vue";
@@ -46,20 +48,18 @@ export default {
     const { verifiedRedirect } = useRedirect();
 
     let responseError = ref("");
+    let fetching = ref(false);
 
     const submit = async () => {
       if (groupValidate(groupForm)) {
-        responseError.value = (
-          await dispatch("createGroup", {
-            form: groupForm,
-            token: getters.getAuth.token,
-          })
-        ).error;
+        fetching.value = true;
+        responseError.value = (await dispatch("createGroup", groupForm)).error;
+        fetching.value = false;
 
         if (responseError.value) {
           showAlert();
         } else {
-          console.log(await dispatch("fetchGroups", getters.getAuth.token));
+          await dispatch("fetchGroups");
           verifiedRedirect("/");
         }
       }
@@ -69,9 +69,11 @@ export default {
       alertOpen,
       responseError,
       submit,
+      fetching,
     };
   },
   components: {
+    Progress,
     Alert,
   },
 };
