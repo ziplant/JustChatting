@@ -1,14 +1,13 @@
 {
   "port": 5000,
   "connection": {
-    "dialect": "mariadb",
-    "host": "localhost",
+    "dialect": "mysql",
+    "host": "db",
     "user": "root",
-    "database": "JustChatting",
-    "password": "5572505"
+    "password": "secret",
+    "database": "JustChatting"
   },
   "tokenSecret": "helloworld",
-  "cryptoSecret": "worldhello",
   "images": {
     "path": "files/images",
     "ext": [".jpeg", ".jpg", ".png"]

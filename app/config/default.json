@@ -1,0 +1,15 @@
+{
+  "port": 5000,
+  "connection": {
+    "dialect": "mysql",
+    "host": "localhost",
+    "user": "root",
+    "password": "secret",
+    "database": "JustChatting"
+  },
+  "tokenSecret": "helloworld",
+  "images": {
+    "path": "files/images",
+    "ext": [".jpeg", ".jpg", ".png"]
+  }
+}

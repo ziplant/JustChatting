@@ -1,0 +1,22 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+  app:
+    image: node
+    user: node
+    working_dir: /home/node/app
+    links:
+      - db:db
+    volumes:
+      - ./app:/home/node/app
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    command: npm run start:install

@@ -1,3 +1,7 @@
+create database JustChatting character set utf8 collate utf8_general_ci;
+
+use JustChatting;
+
 create table `User` (
 	user_id int auto_increment primary key,
 	username varchar(30) unique not null,
